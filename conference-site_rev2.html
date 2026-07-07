@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026년 우주탐사분과 달 워크숍</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+
+<body>
+  <div id="cover-screen" class="cover-screen">
+    <!-- <img src="Firefly.jpg" alt="달 워크숍" class="cover-image"> -->
+    <div class="cover-content">
+      <p class="cover-eyebrow">한국우주과학회 우주탐사분과</p>
+      <h1 class="cover-title">2026 Lunar Workshop</h1>
+      <p class="cover-sub">8월 25일(화) – 26일(수)<br>경희대학교 전자정보대학 205호</p>
+      <button id="cover-enter-btn" class="cover-btn">프로그램 일정</button>
+    </div>
+    <img src="Firefly.jpg" alt="달 워크숍" class="cover-image">
+  </div>
+
+
+  <div id="app">
+
+    <header class="top">
+      <div class="header-text">
+        <p class="eyebrow">2026년 우주탐사분과 달 워크숍</p>
+        <h1 id="header-title">프로그램 일정</h1>
+        <p class="meta" id="header-meta"></p>
+      </div>
+
+      <nav>
+        <div class="nav-item active" data-screen="schedule">
+          <span class="nav-icon">▦</span>일정표
+        </div>
+        <div class="nav-item" data-screen="search">
+          <span class="nav-icon">⌕</span>초록 검색
+        </div>
+      </nav>
+    </header>
+
+    <div class="day-tabs" id="day-tabs"></div>
+
+    <!-- SCHEDULE SCREEN -->
+    <div class="screen active" id="screen-schedule">
+      <div class="track-header-row" id="track-header-row"></div>
+      <div class="grid-scroll" id="grid-scroll">
+        <div class="grid-body" id="grid-body"></div>
+      </div>
+    </div>
+
+    <!-- SEARCH SCREEN -->
+    <div class="screen" id="screen-search">
+      <div class="search-wrap">
+        <div class="search-box">
+          <span class="search-icon">⌕</span>
+          <input type="text" id="search-input" placeholder="제목, 저자, 키워드로 검색">
+        </div>
+      </div>
+      <div class="filter-chips" id="filter-chips"></div>
+      <p class="result-count" id="result-count"></p>
+      <div class="abstract-list" id="abstract-list"></div>
+    </div>
+
+  </div>
+
+  <div class="modal-backdrop" id="modal-backdrop">
+    <div class="modal-sheet" id="modal-sheet"></div>
+  </div>
+
+  <script>
+
+    const DATA = {
+      conference: {
+        name: "2026년 우주탐사분과 달 워크숍",
+        venue: "경희대학교 전자정보대학 205호"
+      },
+      days: [
+        { id: "d1", label: "1일차", date: "8월 25일 (화)" },
+        { id: "d2", label: "2일차", date: "8월 26일 (수)" },
+        // { id: "d3", label: "3일차", date: "11월 20일 (목)" }
+      ],
+      tracks: {
+        d1: [
+          { id: "t1", name: "트랙 A · 위성시스템", room: "201호" },
+          // { id: "t2", name: "트랙 B · 우주데이터", room: "202호" },
+          // { id: "t3", name: "트랙 C · 통신/항법", room: "203호" }
+        ],
+        d2: [
+          { id: "t1", name: "트랙 A · 위성시스템", room: "201호" },
+        ],
+        d3: [
+          { id: "t1", name: "트랙 A · 행성탐사", room: "201호" },
+          // { id: "t2", name: "트랙 B · AI 융합", room: "202호" }
+        ]
+      },
+      // gridStart: 8,   // 08:00
+      // gridEnd: 18,    // 18:00
+
+
+
+      sessions: []
+      };
+
+    /* ============ STATE ============ */
+    let state = {
+      currentDay: DATA.days[0].id,
+      currentScreen: 'schedule',
+      searchQuery: '',
+      activeFilter: 'all'
+    };
+
+    /* ============ TIME HELPERS ============ */
+    function timeToMinutes(t) {
+      const [h, m] = t.split(':').map(Number);
+      return h * 60 + m;
+    }
+    function minutesFromGridStart(t) {
+      return timeToMinutes(t) - DATA.gridStart * 60;
+    }
+    const PX_PER_MIN = 5;
+
+    /* ============ RENDER: DAY TABS ============ */
+    function renderDayTabs() {
+      const el = document.getElementById('day-tabs');
+      el.innerHTML = DATA.days.map(d => `
+    <div class="day-tab ${d.id === state.currentDay ? 'active' : ''}" data-day="${d.id}">
+      <span class="d-num">${d.label}</span>${d.date}
+    </div>
+  `).join('');
+      el.querySelectorAll('.day-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          state.currentDay = tab.dataset.day;
+          renderAll();
+        });
+      });
+    }
+
+    /* ============ RENDER: SCHEDULE GRID ============ */
+    function renderSchedule() {
+      if (state.currentDay === 'd1') {
+        DATA.gridStart = 13;
+        DATA.gridEnd = 18;
+      }
+      else if (state.currentDay === 'd2') {
+        DATA.gridStart = 9;
+        DATA.gridEnd = 13;
+      }
+
+      const tracks = DATA.tracks[state.currentDay];
+      const sessions = DATA.sessions.filter(s => s.day === state.currentDay);
+      const dayInfo = DATA.days.find(d => d.id === state.currentDay);
+
+      document.getElementById('header-title').textContent = '프로그램 일정';
+      document.getElementById('header-meta').textContent = `${dayInfo.date} · ${DATA.conference.venue}`;
+
+      // Track header row
+      const thr = document.getElementById('track-header-row');
+      thr.innerHTML = '<div class="time-col-spacer"></div>' + tracks.map(t => ``).join('');
+    // <div class="track-header">
+    //   <p class="t-name">${t.name}</p>
+    //   <p class="t-room">${t.room}</p>
+    // </div>
+
+      // Grid body
+      const totalMin = (DATA.gridEnd - DATA.gridStart) * 60;
+      const gridHeight = totalMin * PX_PER_MIN;
+
+      // let timeColHTML = `<div class="time-col" style="height:${gridHeight}px;">`;
+      // for (let h = DATA.gridStart; h <= DATA.gridEnd; h++) {
+      //   const top = (h - DATA.gridStart) * 60 * PX_PER_MIN;
+      //   timeColHTML += `<div class="time-label" style="top:${top}px;">${String(h).padStart(2, '0')}:00</div>`;
+      // }
+      // timeColHTML += '</div>';
+      let timeColHTML = `<div class="time-col" style="height:${gridHeight}px;">`;
+      for (let m = DATA.gridStart * 60; m <= DATA.gridEnd * 60; m += 15) {
+        const top = (m - DATA.gridStart * 60) * PX_PER_MIN;
+        const isHour = m % 60 === 0;
+        const hh = String(Math.floor(m / 60)).padStart(2, '0');
+        const mm = String(m % 60).padStart(2, '0');
+        timeColHTML += `<div class="time-label ${isHour ? '' : 'minor'}" style="top:${top}px;">${isHour ? hh + ':00' : ''}</div>`;
+      }
+      timeColHTML += '</div>';
+
+      // let tracksHTML = tracks.map(track => {
+      //   let hourLines = '';
+      //   for (let h = DATA.gridStart; h <= DATA.gridEnd; h++) {
+      //     const top = (h - DATA.gridStart) * 60 * PX_PER_MIN;
+      //     hourLines += `<div class="hour-line" style="top:${top}px;"></div>`;
+      //   }
+      let tracksHTML = tracks.map(track => {
+        let hourLines = '';
+        for (let m = DATA.gridStart * 60; m <= DATA.gridEnd * 60; m += 15) {
+          const top = (m - DATA.gridStart * 60) * PX_PER_MIN;
+          const isHour = m % 60 === 0;
+          hourLines += `<div class="hour-line ${isHour ? '' : 'minor'}" style="top:${top}px;"></div>`;
+        }
+
+        let cards = sessions.filter(s => s.track === track.id).map(s => {
+          const top = minutesFromGridStart(s.start) * PX_PER_MIN;
+          const height = (timeToMinutes(s.end) - timeToMinutes(s.start)) * PX_PER_MIN;
+          const typeLabel = filterTypes.find(f => f.id === s.type)?.label;
+          return `
+        <div class="session-card type-${s.type}" style="top:${top}px; height:${Math.max(height, 32)}px;" data-session="${s.id}">
+          <div class="s-time">${s.start}–${s.end} · ${typeLabel}</div>
+          <p class="s-title">${s.title}</p>
+          ${s.authors ? `<div class="s-speaker">${s.authors}</div>` : ''}
+        </div>
+      `;
+        }).join('');
+
+        return `<div class="track-col" style="height:${gridHeight}px;">${hourLines}${cards}</div>`;
+      }).join('');
+
+      document.getElementById('grid-body').innerHTML = timeColHTML + tracksHTML;
+
+      /* NOWLINE====================== */
+      // "now" line — only if viewing a day that matches simulated "today"
+      addNowLine(gridHeight, tracks.length);
+
+      // 1분마다 now-line 위치 갱신
+      setInterval(() => {
+        const line = document.querySelector('.now-line');
+        if (line) line.remove();
+        addNowLine(gridHeight, tracks.length);
+      }, 60000);
+
+      // bind click handlers
+      document.querySelectorAll('.session-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const session = DATA.sessions.find(s => s.id === card.dataset.session);
+          if (session.type !== 'break') openModal(session);
+        });
+      });
+    }
+
+    function addNowLine(gridHeight, numTracks) {
+      // 현재시간 기준으로 가로선 now 설정되도록 변경 (나중에 날짜정보도 비교하도록 하면 좋을듯)
+      const now = new Date();
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+      if (currentMinutes < DATA.gridStart * 60 || currentMinutes > DATA.gridEnd * 60) return;
+
+      const top = (currentMinutes - DATA.gridStart * 60) * PX_PER_MIN;
+
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      const timeStr = `${hh}:${mm}`;
+
+      const lineWidth = numTracks; // spans across all track columns
+      const line = document.createElement('div');
+      line.className = 'now-line';
+      line.style.top = top + 'px';
+      line.style.left = '52px';
+      line.innerHTML = `<span class="now-badge">${timeStr}</span>`;
+      document.getElementById('grid-body').appendChild(line);
+    }
+
+    /* ============ RENDER: SEARCH ============ */
+    const filterTypes = [
+      { id: 'all', label: '전체' },
+      { id: 'lunarscience', label: '달과학'}, 
+      { id: 'lunarmission', label: '달탐사임무'},
+      { id: 'payload', label: '달탐사 탑재체'}
+    ];
+
+    function renderFilterChips() {
+      const el = document.getElementById('filter-chips');
+      el.innerHTML = filterTypes.map(f => `
+    <div class="chip ${state.activeFilter === f.id ? 'active' : ''}" data-filter="${f.id}">${f.label}</div>
+  `).join('');
+      el.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+        state.activeFilter = chip.dataset.filter;
+        renderFilterChips();  // 추가: 칩 active 상태 갱신
+        renderSearch();
+        });
+      });
+    }
+
+    function highlight(text, query) {
+      if (!query) return text;
+      const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const re = new RegExp(`(${escaped})`, 'gi');
+      return text.replace(re, '<mark>$1</mark>');
+    }
+
+    function renderSearch() {
+      document.getElementById('header-title').textContent = '발표 초록 검색';
+      document.getElementById('header-meta').textContent = `${DATA.conference.name}`;
+
+      const query = state.searchQuery.trim().toLowerCase();
+      const presentable = DATA.sessions.filter(s => s.type !== 'break');
+
+      let results = presentable.filter(s => {
+        if (state.activeFilter !== 'all' && s.type !== state.activeFilter) return false;
+        if (!query) return true;
+        const haystack = [s.title, s.authors, s.abstract, ...(s.keywords || [])].join(' ').toLowerCase();
+        return haystack.includes(query);
+      });
+
+      document.getElementById('result-count').textContent = query || state.activeFilter !== 'all'
+        ? `검색 결과 ${results.length}건`
+        : `전체 발표 ${results.length}건`;
+
+      const listEl = document.getElementById('abstract-list');
+
+      if (results.length === 0) {
+        listEl.innerHTML = '';
+        listEl.insertAdjacentHTML('beforeend', `
+      <div class="empty-state">
+        <div class="e-icon">⌕</div>
+        <div class="e-title">검색 결과가 없습니다</div>
+        <div class="e-body">다른 검색어나 필터를 시도해보세요.</div>
+      </div>
+    `);
+        return;
+      }
+
+      const typeLabel = filterTypes.reduce((acc, f) => {
+      acc[f.id] = f.label;
+      return acc;
+      }, {});
+      const dayLabel = {};
+      DATA.days.forEach(d => dayLabel[d.id] = d.label);
+
+      listEl.innerHTML = results.map(s => {
+        const titleHTML = highlight(s.title, query);
+        const authorsHTML = highlight(s.authors, query);
+        let snippetHTML = '';
+        if (query && s.abstract.toLowerCase().includes(query)) {
+          const idx = s.abstract.toLowerCase().indexOf(query);
+          const start = Math.max(0, idx - 30);
+          const snippet = (start > 0 ? '…' : '') + s.abstract.slice(start, idx + query.length + 50) + '…';
+          snippetHTML = `<div class="a-snippet">${highlight(snippet, query)}</div>`;
+        }
+        return `
+      <div class="abstract-card" data-session="${s.id}">
+        <span class="a-type ${s.type}">${typeLabel[s.type]}</span>
+        <p class="a-title">${titleHTML}</p>
+        <p class="a-authors">${authorsHTML}</p>
+        <div class="a-meta">
+          <span>${dayLabel[s.day]}</span>
+          <span>${s.start}–${s.end}</span>
+        </div>
+        ${snippetHTML}
+      </div>
+    `;
+      }).join('');
+
+      listEl.querySelectorAll('.abstract-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const session = DATA.sessions.find(s => s.id === card.dataset.session);
+          openModal(session);
+        });
+      });
+    }
+
+    /* ============ MODAL ============ */
+    function openModal(session) {
+      const typeLabel = filterTypes.find(f => f.id === session.type)?.label;
+      const dayInfo = DATA.days.find(d => d.id === session.day);
+      const track = DATA.tracks[session.day].find(t => t.id === session.track);
+
+      document.getElementById('modal-sheet').innerHTML = `
+    <button class="modal-close" id="modal-close-btn">&times;</button>
+    <div class="modal-handle"></div>
+    <span class="modal-type type-${session.type}">${typeLabel}</span>
+    <h2 class="modal-title">${session.title}</h2>
+    <p class="modal-authors">${session.authors}</p>
+    <div class="modal-info-row">
+      <div class="modal-info-item"><div class="label">일자</div><div class="value">${dayInfo.label}</div></div>
+      <div class="modal-info-item"><div class="label">시간</div><div class="value">${session.start}–${session.end}</div></div>
+      <div class="modal-info-item"><div class="label">장소</div><div class="value">${track.room}</div></div>
+    </div>
+    <p class="modal-section-label">초록</p>
+    <p class="modal-abstract-text">${session.abstract}</p>
+  `;
+      document.getElementById('modal-backdrop').classList.add('open');
+      document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+    }
+    function closeModal() {
+      document.getElementById('modal-backdrop').classList.remove('open');
+    }
+    document.getElementById('modal-backdrop').addEventListener('click', (e) => {
+      if (e.target.id === 'modal-backdrop') closeModal();
+    });
+
+    /* ============ NAVIGATION ============ */
+    document.querySelectorAll('nav .nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        state.currentScreen = item.dataset.screen;
+        document.querySelectorAll('nav .nav-item').forEach(i => i.classList.toggle('active', i === item));
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('screen-' + state.currentScreen).classList.add('active');
+        document.getElementById('day-tabs').style.display = state.currentScreen === 'schedule' ? 'flex' : 'none';
+        if (state.currentScreen === 'search') {
+          renderFilterChips();
+          renderSearch();
+        } else {
+          renderSchedule();
+        }
+      });
+    });
+
+    document.getElementById('search-input').addEventListener('input', (e) => {
+      state.searchQuery = e.target.value;
+      renderSearch();
+    });
+
+    /* ============ INIT ============ */
+    function renderAll() {
+      renderDayTabs();
+      if (state.currentScreen === 'schedule') renderSchedule();
+      else { renderFilterChips(); renderSearch(); }
+    }
+    
+    // renderAll();
+
+    async function loadData () {
+      try {
+        const res = await fetch('2026_Lunarworkshop_presentation.xlsx');
+        if (!res.ok) throw new Error('2026_Lunarworkshop_presentation.xlsx를 찾을 수 없습니다');
+        const buffer = await res.arrayBuffer();
+        const workbook = XLSX.read(buffer, { type: 'array' });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(sheet, {raw:false});
+        console.log(rows[0])
+        
+        DATA.sessions = rows.map(row => ({
+          id: String(row.id).trim(),
+          day: String(row.day).trim(),
+          track: String(row.track).trim(),
+          start: String(row.start).trim(),
+          end: String(row.end).trim(),
+          type: String(row.type).trim(),
+          title: String(row.title || '').trim(),
+          authors: String(row.authors || '').trim(),
+          abstract: String(row.abstract || '').trim(),
+          keywords: row.keywords ? String(row.keywords).split(',').map(k => k.trim()) : []
+        }));
+
+        renderAll();
+      }
+
+      catch (err) {
+        console.error('데이터 로딩 실패:', err);
+        document.getElementById('grid-body').innerHTML =
+          '<p style="padding:20px;">데이터를 불러오는 데 실패했습니다. 파일을 확인해주세요.</p>';
+      }
+  }
+  loadData();
+
+  document.getElementById('cover-enter-btn').addEventListener('click', () => {
+  document.getElementById('cover-screen').classList.add('hidden');
+  });
+
+  </script>
+</body>
+
+</html>
