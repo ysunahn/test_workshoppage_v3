@@ -37,6 +37,7 @@
       <div class="header-text">
         <p class="eyebrow">2026년 우주탐사분과 달 워크숍</p>
         <h1 id="header-title">프로그램 일정</h1>
+        <p class="meta" id="header-meta"></p>
       </div>
 
       <nav>
@@ -216,7 +217,7 @@
       const dayInfo = DATA.days.find(d => d.id === state.currentDay);
 
       document.getElementById('header-title').textContent = '프로그램 일정';
-      // document.getElementById('header-meta').textContent = `${dayInfo.date} · ${DATA.conference.venue}`;
+      document.getElementById('header-meta').textContent = `${dayInfo.date} · ${DATA.conference.venue}`;
 
       // Track header row
       const thr = document.getElementById('track-header-row');
@@ -351,7 +352,7 @@
 
     function renderSearch() {
       document.getElementById('header-title').textContent = '발표 초록 검색';
-      // document.getElementById('header-meta').textContent = `${DATA.conference.name}`;
+      document.getElementById('header-meta').textContent = `${DATA.conference.name}`;
 
       const query = state.searchQuery.trim().toLowerCase();
       const presentable = DATA.sessions.filter(s => s.type !== 'break');
