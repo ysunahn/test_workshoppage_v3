@@ -52,6 +52,17 @@ body {
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
 }
 
+#info {
+  width: 100%;
+  max-width: 480px;
+  min-height: 100vh;
+  background: var(--paper);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.08);
+}
+
 /* cover */
 
 .cover-screen {
@@ -116,9 +127,14 @@ body {
   /* mask-composite: intersect; */
 }
 
-.cover-screen.hidden {
+/* .cover-screen.hidden {
   display: none;
+} */
+
+.hidden {
+  display: none !important;
 }
+
 
 .cover-content {
   position: relative;
@@ -129,6 +145,14 @@ body {
   justify-content: center;
   flex: 1;              /* 남은 공간을 채우면서 세로 중앙 정렬 */
 
+}
+
+
+.cover-btn-group {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  position: relative;
 }
 
 .cover-eyebrow {
@@ -164,7 +188,23 @@ body {
   animation-delay: 0.3s;
 }
 
-.cover-btn {
+.enter-btn {
+  background: var(--backgroundyellow);
+  color: #fff;
+  /* color: var(--navy); */
+  border: none;
+  /* padding: 12px 28px; */
+  padding: 10px 15px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  opacity: 0;
+  animation: fadeIn 1s ease-out forwards;
+  animation-delay: 0.3s;
+}
+
+.info-btn {
   background: var(--backgroundyellow);
   color: #fff;
   /* color: var(--navy); */
@@ -184,7 +224,8 @@ body {
 header.top {
   background: var(--navy);
   color: #fff;
-  padding: 18px 20px 14px;
+  /* padding: 18px 20px 14px; */
+  padding: 25px 20px 14px;
   position: sticky;
   top: 0;
   z-index: 50;
@@ -192,7 +233,46 @@ header.top {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  /* info랑 app이랑 높이 같도록 지정 (app은 header+nav, info는 header만 있음) */
+  min-height: 104.957px 
 }
+
+
+/* 홈으로 돌아가기 (일정용) */
+.home-btn {
+  position: absolute;
+  top: 12px;
+  left: 15px;
+  background: none;
+  border: none;
+  color: #9FB0C9;
+  font-size: 10px;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* 홈으로 돌아가기(인포용) */
+.home-btn-info {
+  position: absolute;
+  top: 12px;
+  left: 15px;
+  background: none;
+  border: none;
+  color: #9FB0C9;
+  font-size: 10px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.home-btn-icon{
+  transform: rotate(180deg);
+  display: inline-block;
+}
+
+/* .header-text{
+  margin-top: 5px;
+} */
 
 header.top .eyebrow {
   font-size: 11px;
@@ -298,6 +378,120 @@ nav .nav-icon {
   margin-bottom: 0;        /* 아이콘 아래 텍스트 쌓던 구조 → 나란히 배치로 변경 */
   line-height: 1;
 }
+
+/* info body text */
+.info-body {
+  font-family: 'Source Serif 4', serif;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 auto
+}
+
+.info-box {
+  background-color: #f9f9f9;
+  border: 1px solid #dddddd;
+  border-radius: 4px;
+  margin-top: 10px;
+  margin-left:10px;
+  margin-right: 10px;
+  /* width: 100%; */
+  padding: 10px;
+}
+
+.info-box span {
+  display: block;                /* span을 블록화하여 줄바꿈 및 행간이 잘 먹히도록 설정 */
+  font-size: 13px;               /* 글자 크기 */
+  line-height: 1.6;              /* 줄간격 (가독성 향상) */
+  color: #333333;                /* 글자 색상 (짙은 회색) */
+  word-break: keep-all;          /* 한글 단어가 중간에서 끊기지 않고 줄바꿈되도록 설정 */
+}
+
+.info-section-title {
+  display:flex;
+  gap: 10px;
+  margin: 10px;
+  font-size: 17px; 
+  color: #333333; 
+  /* font-weight: bold; */
+  text-align: center;
+}
+
+
+.info-category {
+  display:flex;
+  gap: 10px;
+  margin: 10px;
+}
+
+.category-item {
+  flex: 1;  /* 3개가 균등하게 폭을 나눠가짐 */
+  min-height: 60px; 
+  background: #FFFFFF;
+  color: #fff;
+  padding: 0px;
+
+  position: relative;
+  overflow: hidden;
+}
+
+.category-image {
+  width: 100%;         
+  height: 100%;
+  object-fit: cover;
+  display: block;
+
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.category-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #333333; 
+  font-size: 11px;
+  font-weight: bold;
+  text-align: center;
+  white-space: nowrap;
+  z-index: 1; /* z-index가 1이면 이미지보다 위에 위치하게 됨 */
+
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* .category-item:hover .category-image {
+  opacity: 0.4; 
+}
+.category-item:hover .category-text {
+  opacity: 1; 
+} */
+ .category-item.active-touch .category-text {
+  opacity: 1;
+}
+
+.category-item.active-touch .category-image {
+  opacity: 0.4;
+}
+
+
+.info-participant {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin: 10px;
+  /* background: var(--graybutton); */
+  /* color: #000; */
+}
+
+.map-dinner {
+  color: #333333; 
+  font-size: 13px;
+  font-weight: bold;
+  text-align: center;
+  white-space: nowrap;
+}
+
 
 /* ---------- SCREENS ---------- */
 .screen {
