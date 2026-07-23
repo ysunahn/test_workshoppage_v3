@@ -241,6 +241,7 @@
       for (let m = DATA.gridStart * 60; m <= DATA.gridEnd * 60; m += 15) {
         const top = (m - DATA.gridStart * 60) * PX_PER_MIN;
         const isHour = m % 60 === 0;
+        const isFirst = m === DATA.gridStart * 60; // 맨 처음 시간이면 nav 위로 글씨 나오지 않도록 처리하기 위해 추가함
         const hh = String(Math.floor(m / 60)).padStart(2, '0');
         const mm = String(m % 60).padStart(2, '0');
         timeColHTML += `<div class="time-label ${isHour ? '' : 'minor'}" style="top:${top}px;">${isHour ? hh + ':00' : ''}</div>`;
