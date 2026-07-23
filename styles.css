@@ -578,6 +578,11 @@ nav .nav-icon {
   font-weight: 500;
 }
 
+.time-label.first {
+  transform: translateY(0);   /* 첫 줄만 원래 위치 그대로, 위로 안 밀림 */
+}
+
+
 .track-col {
   flex: 1;
   min-width: 0;
