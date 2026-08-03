@@ -558,11 +558,18 @@ nav .nav-icon {
 }
 
 #attendee-list-btn {
+  background: var(--backgroundyellow);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+
   position: absolute;
   bottom: 10px;
   right: 10px;
-  padding: 8px 16px;
-  font-size: 12px;
   width: auto;
 }
 /* ---------- SCREENS ---------- */
