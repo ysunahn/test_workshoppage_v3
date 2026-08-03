@@ -411,19 +411,19 @@ nav .nav-item {
 
   background: #e8e8e8;
   border: 1px solid #d0d0d0;
-  border-radius: 6px;
+  border-radius: 999px;
   color: #333333;
 }
 
 nav .nav-item.active {
   background: var(--terracotta);   /* 회색 대신 원래 노란색으로 복원 */
+  font-weight: bold;
   color: #fff;
 }
 
-
 nav .nav-icon {
-  font-size: 15px;         /* 세로 공간 절약을 위해 살짝 축소 */
-  margin-bottom: 0;        /* 아이콘 아래 텍스트 쌓던 구조 → 나란히 배치로 변경 */
+  font-size: 15px;        
+  margin-bottom: 0;       
   line-height: 1;
 }
 
