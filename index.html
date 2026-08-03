@@ -105,6 +105,7 @@
 
       <span class="info-section-title"> Topics </span>
       <!-- <button class="info-enter-btn"> 스케줄표 이동 </button> -->
+       
 
       <div class="info-category">
         <div class="category-item">
@@ -140,6 +141,9 @@
         </div>
       </div>
 
+      <!-- 여기에 추가 -->
+      <button id="attendee-list-btn" class="info-schedule-btn">참석자 명단</button>
+
     </div>
 
   </div>
@@ -165,7 +169,11 @@
       },
       // gridStart: 8,   // 08:00
       // gridEnd: 18,    // 18:00
-      sessions: [] // xlsx 파일에서 불러오기, 만약 하드코딩할거면 안에 양식 맞춰서 작성
+
+      // xlsx 파일에서 불러올 세션정보, 참석자 명단
+      sessions: [],
+      attendees: []
+
       };
 
     /* ============ STATE ============ */
@@ -475,6 +483,32 @@
       renderSearch();
     });
 
+    /* ============ attendees list page ============ */
+    function renderAttendees() {
+      const rowsHTML = DATA.attendees.map(a => `
+        <tr>
+          <td>${a.name}</td>
+          <td>${a.affiliation}</td>
+        </tr>
+      `).join('');
+
+      document.getElementById('modal-sheet').innerHTML = `
+        <button class="modal-close" id="modal-close-btn">&times;</button>
+        <div class="modal-handle"></div>
+        <h2 class="modal-title">참석자 명단</h2>
+        <table class="attendee-table">
+          <thead>
+            <tr><th>이름</th><th>소속</th></tr>
+          </thead>
+          <tbody>
+            ${rowsHTML}
+          </tbody>
+        </table>
+      `;
+      document.getElementById('modal-backdrop').classList.add('open');
+      document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+    }
+
     /* ============ INIT ============ */
     function renderAll() {
       renderDayTabs();
@@ -515,8 +549,34 @@
         document.getElementById('grid-body').innerHTML =
           '<p style="padding:20px;">데이터를 불러오는 데 실패했습니다. 파일을 확인해주세요.</p>';
       }
+    }
+
+    async function loadAttendees() {
+    try {
+      const res = await fetch('2026_attendees_list.xlsx');   // 참석자 엑셀 파일명
+      if (!res.ok) throw new Error('2026_attendees_list.xlsx를 찾을 수 없습니다');
+      const buffer = await res.arrayBuffer();
+      const workbook = XLSX.read(buffer, { type: 'array' });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet, { raw: false });
+
+      DATA.attendees = rows.map(row => ({
+        name: String(row.name || '').trim(),
+        nameEn: String(row.nameEn || '').trim(),
+        affiliation: String(row.affiliation || '').trim()
+      }));
+    } catch (err) {
+      console.error('참석자 명단 로딩 실패:', err);
+    }
   }
+
   loadData();
+  loadAttendees();
+
+
+  document.getElementById('attendee-list-btn').addEventListener('click', () => {
+  renderAttendees();
+  });
 
   document.getElementById('cover-enter-btn').addEventListener('click', () => {
   document.getElementById('cover-screen').classList.add('hidden');
