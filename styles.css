@@ -221,6 +221,8 @@ body {
   animation-delay: 0.3s;
 }
 
+
+
 /* ---------- HEADER ---------- */
 header.top {
   background: var(--navy);
@@ -476,23 +478,75 @@ nav .nav-icon {
 }
 
 
-.info-participant {
+/* .info-participant {
   display: flex;
   flex-direction: column;
   gap: 30px;
   margin: 10px;
-  /* background: var(--graybutton); */
-  /* color: #000; */
-}
+} */
 
-.map-dinner {
+/* .map-dinner {
   color: #333333; 
   font-size: 13px;
   font-weight: bold;
   text-align: center;
   white-space: nowrap;
+} */
+.info-location-group {
+  display: flex;
+  gap: 10px;
+  margin: 10px;
 }
 
+.location-card {
+  flex: 1;
+  background: var(--navy);
+  color: #fff;
+  border-radius: 10px;
+  padding: 14px;
+  text-decoration: none;   /* a태그 밑줄 제거 */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.location-icon {
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+
+.location-title {
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+
+.location-sub {
+  font-size: 11px;
+  color: #B9C5D8;
+}
+
+.location-arrow {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-size: 14px;
+  color: var(--terracotta);
+}
+
+#attendee-list-btn {
+  width: 100%;
+  margin: 10px;
+  width: calc(100% - 20px);   /* 좌우 margin 10px씩 감안 */
+  background: var(--backgroundyellow);
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
 
 /* ---------- SCREENS ---------- */
 .screen {
