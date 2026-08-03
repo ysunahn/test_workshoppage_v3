@@ -565,9 +565,10 @@ nav .nav-icon {
 
 #attendee-list-btn {
   display: block;
-  margin: 0 10px 24px auto;
+  margin: 0 10px 8px auto;
   padding: 8px 16px;
-  font-size: 12px;
+  font-size: 10px;
+  font-family: 'Inter', sans-serif;
   cursor: pointer;
 
   background: #e8e8e8;        /* 연한 회색 */
