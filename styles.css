@@ -526,12 +526,11 @@ nav .nav-icon {
   color: #B9C5D8;
 }
 
-.location-arrow {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  font-size: 14px;
+.location-link-hint {
+  font-size: 10px;
   color: var(--terracotta);
+  margin-top: 6px;
+  font-weight: 600;
 }
 
 #attendee-list-btn {
