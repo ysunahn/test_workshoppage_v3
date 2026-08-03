@@ -221,7 +221,7 @@ body {
   background: #e8e8e8;
   color: #333333;
   border: 1px solid #d0d0d0;
-  border-radius: 6px;
+  border-radius: 999px;
   padding: 10px 15px;
   font-size: 12px;
   font-weight: 600;
@@ -235,7 +235,7 @@ body {
   background: #e8e8e8;
   color: #333333;
   border: 1px solid #d0d0d0;
-  border-radius: 6px;
+  border-radius: 999px;
   padding: 10px 15px;
   font-size: 12px;
   font-weight: 600;
