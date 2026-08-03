@@ -192,9 +192,7 @@ body {
 /* .enter-btn {
   background: var(--backgroundyellow);
   color: #fff;
-  /* color: var(--navy); */
   border: none;
-  /* padding: 12px 28px; */
   padding: 10px 15px;
   border-radius: 999px;
   font-size: 12px;
@@ -208,9 +206,7 @@ body {
 .info-btn {
   background: var(--backgroundyellow);
   color: #fff;
-  /* color: var(--navy); */
   border: none;
-  /* padding: 12px 28px; */
   padding: 10px 15px;
   border-radius: 999px;
   font-size: 12px;
@@ -225,7 +221,7 @@ body {
   background: #e8e8e8;
   color: #333333;
   border: 1px solid #d0d0d0;
-  border-radius: 0;
+  border-radius: 6px;
   padding: 10px 15px;
   font-size: 12px;
   font-weight: 600;
@@ -239,7 +235,7 @@ body {
   background: #e8e8e8;
   color: #333333;
   border: 1px solid #d0d0d0;
-  border-radius: 0;
+  border-radius: 6px;
   padding: 10px 15px;
   font-size: 12px;
   font-weight: 600;
@@ -415,13 +411,13 @@ nav .nav-item {
 
   background: #e8e8e8;
   border: 1px solid #d0d0d0;
-  border-radius: 0;
+  border-radius: 6px;
   color: #333333;
 }
 
 nav .nav-item.active {
-  background: #d0d0d0;   /* 선택된 상태는 조금 더 진한 회색으로 구분 */
-  color: #333333;
+  background: var(--terracotta);   /* 회색 대신 원래 노란색으로 복원 */
+  color: #fff;
 }
 
 
