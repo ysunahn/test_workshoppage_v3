@@ -1124,20 +1124,43 @@ mark {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
+  table-layout: fixed;
 }
 
-.attendee-table th,
+.attendee-table th:nth-child(1),
+.attendee-table td:nth-child(1) {
+  width: 15%;
+}
+
+.attendee-table th:nth-child(2),
+.attendee-table td:nth-child(2) {
+  width: 30%;
+}
+
+.attendee-table th:nth-child(3),
+.attendee-table td:nth-child(3) {
+  width: 55%;  
+}
+
 .attendee-table td {
   padding: 8px;
   border-bottom: 1px solid var(--line);
   text-align: left;
 }
 
+.attendee-table td:first-child {
+  text-align: center;
+}
+
 .attendee-table th {
+  padding: 8px;
+  border-bottom: 1px solid var(--line);
+  text-align: center;
   font-size: 11px;
   color: var(--ink-faint);
   text-transform: uppercase;
 }
+
 
 /* ---------- EMPTY STATE ---------- */
 .empty-state {
