@@ -498,7 +498,7 @@
 
     /* ============ attendees list page ============ */
     function renderAttendees() {
-      const rowsHTML = DATA.attendees.map(a => `
+      const rowsHTML = DATA.attendees.map((a, index) => `
         <tr>
           <td>${index + 1}</td>
           <td>${a.name}</td>
