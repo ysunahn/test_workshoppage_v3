@@ -1126,6 +1126,7 @@ mark {
   font-size: 13px;
 }
 
+.attendee-table th,
 .attendee-table td {
   padding: 8px;
   border-bottom: 1px solid var(--line);
@@ -1133,9 +1134,6 @@ mark {
 }
 
 .attendee-table th {
-  padding: 8px;
-  border-bottom: 1px solid var(--line);
-  text-align: center;   /* 헤더만 중앙정렬 */
   font-size: 11px;
   color: var(--ink-faint);
   text-transform: uppercase;
