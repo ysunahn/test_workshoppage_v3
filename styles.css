@@ -1119,7 +1119,7 @@ mark {
   margin: 0 0 4px;
 }
 
-/* ---------- attendee list  ---------- */
+/* ---------- attendee list (버튼 클릭 시 나타나는 참가등록자 명단 화면)  ---------- */
 .attendee-table {
   width: 100%;
   border-collapse: collapse;
@@ -1129,17 +1129,17 @@ mark {
 
 .attendee-table th:nth-child(1),
 .attendee-table td:nth-child(1) {
-  width: 15%;
+  width: 10%;
 }
 
 .attendee-table th:nth-child(2),
 .attendee-table td:nth-child(2) {
-  width: 30%;
+  width: 20%;
 }
 
 .attendee-table th:nth-child(3),
 .attendee-table td:nth-child(3) {
-  width: 55%;  
+  width: 70%;  
 }
 
 .attendee-table td {
@@ -1150,12 +1150,13 @@ mark {
 
 .attendee-table td:first-child {
   text-align: center;
+  font-size: 9px;
 }
 
 .attendee-table th {
   padding: 8px;
   border-bottom: 1px solid var(--line);
-  text-align: center;
+  text-align: left;
   font-size: 11px;
   color: var(--ink-faint);
   text-transform: uppercase;
