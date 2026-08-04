@@ -500,6 +500,7 @@
     function renderAttendees() {
       const rowsHTML = DATA.attendees.map(a => `
         <tr>
+          <td>${index + 1}</td>
           <td>${a.name}</td>
           <td>${a.affiliation}</td>
         </tr>
@@ -511,7 +512,7 @@
         <h2 class="modal-title">참석자 명단</h2>
         <table class="attendee-table">
           <thead>
-            <tr><th>이름</th><th>소속</th></tr>
+            <tr><th>번호</th><th>이름</th><th>소속</th></tr>
           </thead>
           <tbody>
             ${rowsHTML}
