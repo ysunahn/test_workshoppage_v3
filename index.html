@@ -35,10 +35,8 @@
         <span class="home-btn-icon">➜ </span> Home
       </button> 
       <div class="header-text">
-        <!-- <p class="eyebrow">2026년 우주탐사분과 달 워크숍</p> -->
         <h1 id="header-title">프로그램 일정</h1>
         <p class="meta" id="header-meta"></p>
-        <!-- 메타를 없애던가. 아님 정렬을 바로하던가... -->
       </div>
 
       <nav>
@@ -53,7 +51,7 @@
 
     <div class="day-tabs" id="day-tabs"></div>
 
-    <!-- SCHEDULE SCREEN -->
+    <!-- schedule screeen -->
     <div class="screen active" id="screen-schedule">
       <div class="track-header-row" id="track-header-row"></div>
       <div class="grid-scroll" id="grid-scroll">
@@ -61,7 +59,7 @@
       </div>
     </div>
 
-    <!-- SEARCH SCREEN -->
+    <!-- search screen -->
     <div class="screen" id="screen-search">
       <div class="search-wrap">
         <div class="search-box">
@@ -179,8 +177,6 @@
           { id: "t1", name: "", room: "205호" },
         ]
       },
-      // gridStart: 8,   // 08:00
-      // gridEnd: 18,    // 18:00
 
       // xlsx 파일에서 불러올 세션정보, 참석자 명단
       sessions: [],
@@ -188,7 +184,6 @@
 
       };
 
-    /* ============ STATE ============ */
     let state = {
       currentDay: DATA.days[0].id,
       currentScreen: 'schedule',
@@ -196,7 +191,6 @@
       activeFilter: 'all'
     };
 
-    /* ============ TIME HELPERS ============ */
     function timeToMinutes(t) {
       const [h, m] = t.split(':').map(Number);
       return h * 60 + m;
@@ -206,7 +200,6 @@
     }
     const PX_PER_MIN = 5;
 
-    /* ============ RENDER: DAY TABS ============ */
     function renderDayTabs() {
       const el = document.getElementById('day-tabs');
       el.innerHTML = DATA.days.map(d => `
@@ -222,7 +215,6 @@
       });
     }
 
-    /* ============ RENDER: SCHEDULE GRID ============ */
     function renderSchedule() {
       if (state.currentDay === 'd1') {
         DATA.gridStart = 13;
@@ -243,38 +235,22 @@
       // Track header row
       const thr = document.getElementById('track-header-row');
       thr.innerHTML = '<div class="time-col-spacer"></div>' + tracks.map(t => ``).join('');
-    // <div class="track-header">
-    //   <p class="t-name">${t.name}</p>
-    //   <p class="t-room">${t.room}</p>
-    // </div>
 
       // Grid body
       const totalMin = (DATA.gridEnd - DATA.gridStart) * 60;
       const gridHeight = totalMin * PX_PER_MIN;
 
-      // let timeColHTML = `<div class="time-col" style="height:${gridHeight}px;">`;
-      // for (let h = DATA.gridStart; h <= DATA.gridEnd; h++) {
-      //   const top = (h - DATA.gridStart) * 60 * PX_PER_MIN;
-      //   timeColHTML += `<div class="time-label" style="top:${top}px;">${String(h).padStart(2, '0')}:00</div>`;
-      // }
-      // timeColHTML += '</div>';
       let timeColHTML = `<div class="time-col" style="height:${gridHeight}px;">`;
       for (let m = DATA.gridStart * 60; m <= DATA.gridEnd * 60; m += 15) {
         const top = (m - DATA.gridStart * 60) * PX_PER_MIN;
         const isHour = m % 60 === 0;
-        const isFirst = m === DATA.gridStart * 60; // 맨 처음 시간이면 nav 위로 글씨 나오지 않도록 처리하기 위해 추가함
+        const isFirst = m === DATA.gridStart * 60;
         const hh = String(Math.floor(m / 60)).padStart(2, '0');
         const mm = String(m % 60).padStart(2, '0');
         timeColHTML += `<div class="time-label ${isHour ? '' : 'minor'}" style="top:${top}px;">${isHour ? hh + ':00' : ''}</div>`;
       }
       timeColHTML += '</div>';
 
-      // let tracksHTML = tracks.map(track => {
-      //   let hourLines = '';
-      //   for (let h = DATA.gridStart; h <= DATA.gridEnd; h++) {
-      //     const top = (h - DATA.gridStart) * 60 * PX_PER_MIN;
-      //     hourLines += `<div class="hour-line" style="top:${top}px;"></div>`;
-      //   }
       let tracksHTML = tracks.map(track => {
         let hourLines = '';
         for (let m = DATA.gridStart * 60; m <= DATA.gridEnd * 60; m += 15) {
@@ -301,8 +277,7 @@
 
       document.getElementById('grid-body').innerHTML = timeColHTML + tracksHTML;
 
-      /* NOWLINE====================== */
-      // "now" line — only if viewing a day that matches simulated "today"
+      // "now" line
       addNowLine(gridHeight, tracks.length);
 
       // 1분마다 now-line 위치 갱신
@@ -312,7 +287,6 @@
         addNowLine(gridHeight, tracks.length);
       }, 60000);
 
-      // bind click handlers
       document.querySelectorAll('.session-card').forEach(card => {
         card.addEventListener('click', () => {
           const session = DATA.sessions.find(s => s.id === card.dataset.session);
@@ -322,7 +296,6 @@
     }
 
     function addNowLine(gridHeight, numTracks) {
-      // 현재시간 기준으로 가로선 now 설정되도록 변경 (나중에 날짜정보도 비교하도록 하면 좋을듯)
       const now = new Date();
       const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
@@ -343,7 +316,7 @@
       document.getElementById('grid-body').appendChild(line);
     }
 
-    /* ============ RENDER: SEARCH ============ */
+    // search 
     const filterTypes = [
       { id: 'all', label: '전체' },
       { id: 'lunarscience', label: '달과학'}, 
@@ -359,7 +332,7 @@
       el.querySelectorAll('.chip').forEach(chip => {
         chip.addEventListener('click', () => {
         state.activeFilter = chip.dataset.filter;
-        renderFilterChips();  // 추가: 칩 active 상태 갱신
+        renderFilterChips(); 
         renderSearch();
         });
       });
@@ -443,7 +416,7 @@
       });
     }
 
-    /* ============ MODAL ============ */
+    // session modal
     function openModal(session) {
       const typeLabel = filterTypes.find(f => f.id === session.type)?.label;
       const dayInfo = DATA.days.find(d => d.id === session.day);
@@ -473,7 +446,7 @@
       if (e.target.id === 'modal-backdrop') closeModal();
     });
 
-    /* ============ NAVIGATION ============ */
+    // nav
     document.querySelectorAll('nav .nav-item').forEach(item => {
       item.addEventListener('click', () => {
         state.currentScreen = item.dataset.screen;
@@ -495,7 +468,7 @@
       renderSearch();
     });
 
-    /* ============ attendees list page ============ */
+    // attendees list tab
     function renderAttendees() {
       const rowsHTML = DATA.attendees.map((a, index) => `
         <tr>
@@ -616,7 +589,7 @@
   categoryItems.forEach(item => {
     let touchTimeout;
 
-    // [1] 모바일 환경: 터치했을 때 (1.5초 후 자동 삭제)
+    // mobile
     item.addEventListener('touchstart', function(e) {
       clearTimeout(touchTimeout);
       categoryItems.forEach(el => el.classList.remove('active-touch'));
@@ -627,13 +600,13 @@
       }, 1500); 
     });
 
-    // [2] PC 환경: 마우스를 올렸을 때 효과 추가
+    // pc1
     item.addEventListener('mouseenter', function() {
-      clearTimeout(touchTimeout); // 혹시 남아있을 터치 타이머 제거
+      clearTimeout(touchTimeout);
       this.classList.add('active-touch');
     });
 
-    // [3] PC 환경: 마우스가 나갔을 때 효과 제거
+    // pc2
     item.addEventListener('mouseleave', function() {
       this.classList.remove('active-touch');
     });
