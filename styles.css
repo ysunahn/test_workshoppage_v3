@@ -73,7 +73,7 @@ body {
   background: var(--navy);
   color: #fff;
   display: flex;
-  flex-direction: column;   /* 이미지 위, 텍스트 아래로 세로 배치 */
+  flex-direction: column; 
   align-items: center;
   text-align: center;
   
@@ -144,7 +144,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex: 1;              /* 남은 공간을 채우면서 세로 중앙 정렬 */
+  flex: 1;
 
 }
 
@@ -261,12 +261,10 @@ header.top {
   justify-content: space-between;
   align-items: center;
 
-  /* info랑 app이랑 높이 같도록 지정 (app은 header+nav, info는 header만 있음) */
   min-height: 104.957px 
 }
 
 
-/* 홈으로 돌아가기 (일정용) */
 .home-btn {
   position: absolute;
   top: 12px;
@@ -279,7 +277,6 @@ header.top {
   padding: 0;
 }
 
-/* 홈으로 돌아가기(인포용) */
 .home-btn-info {
   position: absolute;
   top: 12px;
@@ -416,7 +413,7 @@ nav .nav-item {
 }
 
 nav .nav-item.active {
-  background: var(--terracotta);   /* 회색 대신 원래 노란색으로 복원 */
+  background: var(--terracotta);
   font-weight: bold;
   color: #fff;
 }
@@ -442,16 +439,16 @@ nav .nav-icon {
   margin-top: 10px;
   margin-left: 10px;
   margin-right: 10px;
-  margin-bottom: 8px;   /* Topics와의 간격 확보용 (이전 답변 참고) */
+  margin-bottom: 8px;
   padding: 10px;
 }
 
 .info-box span {
-  display: block;                /* span을 블록화하여 줄바꿈 및 행간이 잘 먹히도록 설정 */
-  font-size: 13px;               /* 글자 크기 */
-  line-height: 1.6;              /* 줄간격 (가독성 향상) */
-  color: #333333;                /* 글자 색상 (짙은 회색) */
-  word-break: keep-all;          /* 한글 단어가 중간에서 끊기지 않고 줄바꿈되도록 설정 */
+  display: block;
+  font-size: 13px; 
+  line-height: 1.6;
+  color: #333333;
+  word-break: keep-all;
 }
 
 .info-section-title {
@@ -472,7 +469,7 @@ nav .nav-icon {
 }
 
 .category-item {
-  flex: 1;  /* 3개가 균등하게 폭을 나눠가짐 */
+  flex: 1;
   min-height: 60px; 
   background: #FFFFFF;
   color: #fff;
@@ -502,7 +499,7 @@ nav .nav-icon {
   font-weight: bold;
   text-align: center;
   white-space: nowrap;
-  z-index: 1; /* z-index가 1이면 이미지보다 위에 위치하게 됨 */
+  z-index: 1; // 이미지 위로
 
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -555,7 +552,7 @@ nav .nav-icon {
   flex-direction: column;
   align-items: flex-start;
 
-  color: var(--ink);   /* 어두운 텍스트 */
+  color: var(--ink);
 }
 
 .location-header {
@@ -577,7 +574,7 @@ nav .nav-icon {
 
 .location-sub {
   font-size: 11.5px;
-  color: var(--ink-soft);   /* 밝은 배경에 맞는 톤 */
+  color: var(--ink-soft);
   text-align: left;
   margin-bottom: 4px;
 }
@@ -594,19 +591,19 @@ nav .nav-icon {
   margin: 24px 10px 16px;
 }
 
-.sponsor-logo-group {
+/* .sponsor-logo-group {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
   align-items: center;
   padding: 10px;
-  min-height: 60px;   /* 로고 없어도 공간이 확보되도록 */
+  min-height: 60px;
 }
 
 .sponsor-logo-group img {
-  height: 40px;         /* 로고 높이 통일 */
+  height: 40px;
   width: auto;
-}
+} */
 
 #attendee-list-btn {
   display: block;
@@ -616,14 +613,14 @@ nav .nav-icon {
   font-family: 'Source Serif 4', serif;
   cursor: pointer;
 
-  background: #e8e8e8;        /* 연한 회색 */
-  color: #333333;              /* 어두운 글자색 (연한 배경에 잘 보이도록) */
-  border: 1px solid #d0d0d0;   /* 살짝 진한 회색 테두리 */
-  border-radius: 0;             /* 각지게 */
+  background: #e8e8e8;       
+  color: #333333;             
+  border: 1px solid #d0d0d0;  
+  border-radius: 0;            
 }
 
 #attendee-list-btn:hover {
-  background: #dcdcdc;   /* hover 시 살짝 진해지는 효과 (선택사항) */
+  background: #dcdcdc; 
 }
 
 /* ---------- SCREENS ---------- */
@@ -712,7 +709,7 @@ nav .nav-icon {
 }
 
 .time-label.first {
-  transform: translateY(0);   /* 첫 줄만 원래 위치 그대로, 위로 안 밀림 */
+  transform: translateY(0);
 }
 
 
